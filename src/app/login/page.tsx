@@ -9,11 +9,10 @@ import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 
 const schema = yup.object({
-  username: yup
+  email: yup
     .string()
-    .min(4, '사용자명은 최소 4자 이상이어야 합니다')
-    .max(20, '사용자명은 최대 20자까지 가능합니다')
-    .required('사용자명을 입력해주세요'),
+    .email('올바른 이메일 형식이 아닙니다')
+    .required('이메일을 입력해주세요'),
   password: yup
     .string()
     .min(4, '비밀번호는 최소 4자 이상이어야 합니다')
@@ -38,6 +37,7 @@ export default function Login() {
       router.push('/');
     } catch (error) {
       console.error('로그인 실패:', error);
+      alert('로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.');
     }
   };
 
@@ -52,14 +52,14 @@ export default function Login() {
         <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
-              <label htmlFor="username" className="sr-only">사용자명</label>
+              <label htmlFor="email" className="sr-only">이메일</label>
               <input
-                {...register('username')}
-                type="text"
+                {...register('email')}
+                type="email"
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="사용자명"
+                placeholder="이메일"
               />
-              {errors.username && <p className="text-red-500 text-xs mt-1">{errors.username.message}</p>}
+              {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
             </div>
             <div>
               <label htmlFor="password" className="sr-only">비밀번호</label>
