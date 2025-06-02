@@ -13,6 +13,7 @@ interface Board {
   description: string;
   status: 'PUBLIC' | 'PRIVATE';
   user: {
+    id: number;
     username: string;
   };
 }
@@ -20,7 +21,7 @@ interface Board {
 export default function BoardDetail({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
   const router = useRouter();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const [board, setBoard] = useState<Board | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -84,6 +85,8 @@ export default function BoardDetail({ params }: { params: Promise<{ id: string }
     );
   }
 
+  const isAuthor = user?.id === board.user.id;
+
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -110,18 +113,22 @@ export default function BoardDetail({ params }: { params: Promise<{ id: string }
               >
                 목록으로
               </Link>
-              <Link
-                href={`/boards/${resolvedParams.id}/edit`}
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
-                수정
-              </Link>
-              <button
-                onClick={handleDelete}
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-              >
-                삭제
-              </button>
+              {isAuthor && (
+                <>
+                  <Link
+                    href={`/boards/${resolvedParams.id}/edit`}
+                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  >
+                    수정
+                  </Link>
+                  <button
+                    onClick={handleDelete}
+                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                  >
+                    삭제
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>
